@@ -20,3 +20,10 @@ var server = http.createServer(function (request, response) {
 server.listen(config.port, config.host, function() {
 	console.log("Server listening " + config.host + " on " + config.port)
 });
+fs.watchFile("config/server.json", function () {
+  config = JSON.parse(fs.readFileSync("config/server.json"));
+  server.close();
+  server.listen(config.port, config.host, function() {
+    console.log("Server listening " + config.host + " on " + config.port)
+  });
+});
