@@ -14,8 +14,20 @@ app.use(express.static(__dirname + '/public'));
 app.get("/news/:id",  function (req, res) {
   res.send("News #" + req.params.id);
 });
-app.get(function(req, res){
-  res.send("Page not found!");
+app.get("/user/:id", function (req, res) {
+  fs.readFile("public/users.json", function (err, data) {
+    if(err){
+      res.send("Something went wrong!");
+    } else {
+      var users = JSON.parse(data);
+      var user = users[req.params.id];
+      if(user){
+        res.send("<h1>"+user.name+"</h1><br/><a href='mailto:"+user.email+"'> Send mail to "+user.email+"</a>");
+      } else {
+        res.send("Sorry! User does not exist.", 404)
+      }
+    }
+  });
 });
 
 app.listen(config.port, config.host);
