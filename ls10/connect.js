@@ -21,7 +21,17 @@ client.open(function(error, client){
         console.log("Connected to mongo");
         console.log(result);
       }
-      client.close(); // close connection only after inserting
+    });
+
+    users.find().toArray(function (err, users) {
+      if(err) {
+        console.log("Find error: " + err);
+      } else {
+        users.forEach(function (user) {
+          console.log("Id: " + user._id + " Name: " + user.name + "Email: " + user.email);
+        });
+        client.close();
+      }
     });
   }
 });
