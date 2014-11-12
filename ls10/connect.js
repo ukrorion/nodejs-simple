@@ -12,7 +12,16 @@ client.open(function(error, client){
     console.log("Not connected because of error: " + error);
   } else {
     var db = client.db('nodejs-simple');
-    console.log("Connected to mongo");
-    client.close();
+    var users = db.collection("users");
+
+    users.insert([{name: "Jim", email: "jim@example.com"}, {name: "Jim", email: "jim@example.com"}], function(err, result){
+      if(err){
+        console.log("Insert error " + err);
+      } else {
+        console.log("Connected to mongo");
+        console.log(result);
+      }
+      client.close(); // close connection only after inserting
+    });
   }
 });
