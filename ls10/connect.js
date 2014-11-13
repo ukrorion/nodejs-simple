@@ -2,9 +2,26 @@
  * Created by ukrorion on 12.11.2014.
  */
 
-var User = require('./users.js');
+/**
+ * Creation of an object instance when export was done in the following format:
+ * ***  module.exports = User ***
+ *
+ * var User = require('./users.js');
+ * var user = new User();
+ *
+*/
 
-user = User.new();
+/*
+ * Creation of an object instance when export was done in the following format:
+ * ***  module.exports.User = User ***
+ *
+ * var User = require('./users.js').User;
+ * var user = new User();
+ *
+ */
+
+var User = require('./users.js').User;
+var user = new User();
 
 user.insert({name: "Bob", email: "bob@example.com"}, function (res) {
   if(res){
