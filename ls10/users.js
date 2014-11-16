@@ -7,6 +7,10 @@ var mongo = require('mongodb');
 var host = "127.0.0.1";
 var port = "27017";
 
+var connectToCollection = function(client){
+  return client.db('nodejs-simple').collection("users");
+};
+
 User = function() {
   this.client = new mongo.MongoClient(new mongo.Server(host, port, {}));
 };
@@ -16,8 +20,7 @@ User.prototype.getAll =  function(callback){
     if(error){
       console.log("Not connected because of error: " + error);
     } else {
-      var db = client.db('nodejs-simple');
-      var users = db.collection("users");
+      var users = connectToCollection(client);
 
       users.find().toArray(function (err, users) {
         if(err) {
@@ -38,8 +41,7 @@ User.prototype.insert = function(collection, callback){
     if(error){
       console.log("Not connected because of error: " + error);
     } else {
-      var db = client.db('nodejs-simple');
-      var users = db.collection("users");
+      var users = connectToCollection(client);
 
       users.insert(collection, function(err, result){
         if(err){
