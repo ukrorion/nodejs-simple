@@ -1,0 +1,23 @@
+{
+  "name": "ls11",
+  "version": "1.0.0",
+  "description": "Twitter API test",
+  "main": "twitter.js",
+  "dependencies": {
+    "oauth": "^0.9.12"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ukrorion/nodejs-simple"
+  },
+  "author": "ukrorion",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ukrorion/nodejs-simple/issues"
+  },
+  "homepage": "https://github.com/ukrorion/nodejs-simple"
+}
