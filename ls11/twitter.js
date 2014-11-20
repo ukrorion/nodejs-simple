@@ -1,4 +1,6 @@
 var OAuth = require('oauth').OAuth;
+var tweetSeparator = "\r";
+var message = '';
 
 var connection = new OAuth(
   'https://api.twitter.com/oauth/request_token',
@@ -9,18 +11,25 @@ var connection = new OAuth(
   null,
   'HMAC-SHA1'
 );
-console.log(connection);
-connection.get(
-  'https://stream.twitter.com/1.1/statuses/filter.json?track=twitter',
-  '271359180-fmh4JpOdTC0K2nF0QlB2GwyI6q5Cr3Q3WDA8jd41',
-  'r0TCSqMyZDezNjv2JKvunDXPy7XwryjFeOv2gG3qsVuNM',
-  function (e, data, res){
-    if(e) {
-      console.error(e);
-    } else {
-      var s_data = JSON.parse(data);
-      console.log(s_data);
-    }
-    done();
+var request = connection.get('https://stream.twitter.com/1.1/statuses/filter.json?track=HromadskeTV', '271359180-fmh4JpOdTC0K2nF0QlB2GwyI6q5Cr3Q3WDA8jd41', 'r0TCSqMyZDezNjv2JKvunDXPy7XwryjFeOv2gG3qsVuNM');
+var message = '';
+request.on('response', function(response){
+  if(response){
+    response.setEncoding('utf8');
+    response.on('data', function(chunk){
+      message += chunk;
+      var newlineIndex = message.indexOf('\r');
+      if (newlineIndex !== -1) {
+        var tweet_message = message.slice(0, newlineIndex);
+        if (tweet_message.length > 10) {
+          var tweet = JSON.parse(tweet_message);
+          console.log('tweet: ' + tweet.text);
+        }
+      }
+      message = message.slice(newlineIndex + 1);
+    });
+  } else {
+    console.log("Connection lost with error: " + error);
   }
-);
+});
+request.end();
