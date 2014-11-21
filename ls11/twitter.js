@@ -1,6 +1,6 @@
 var OAuth = require('oauth').OAuth;
-var tweetSeparator = "\r";
-var message = '';
+var Tweet = require('./tweets').Tweet;
+var tweetDb = new Tweet();
 
 var connection = new OAuth(
   'https://api.twitter.com/oauth/request_token',
@@ -11,8 +11,13 @@ var connection = new OAuth(
   null,
   'HMAC-SHA1'
 );
-var request = connection.get('https://stream.twitter.com/1.1/statuses/filter.json?track=HromadskeTV', '271359180-fmh4JpOdTC0K2nF0QlB2GwyI6q5Cr3Q3WDA8jd41', 'r0TCSqMyZDezNjv2JKvunDXPy7XwryjFeOv2gG3qsVuNM');
+var request = connection.get('https://stream.twitter.com/1.1/statuses/filter.json?track=twitter', '271359180-fmh4JpOdTC0K2nF0QlB2GwyI6q5Cr3Q3WDA8jd41', 'r0TCSqMyZDezNjv2JKvunDXPy7XwryjFeOv2gG3qsVuNM');
 var message = '';
+
+var random = function(low, high) {
+  return Math.random() * (high - low) + low;
+};
+
 request.on('response', function(response){
   if(response){
     response.setEncoding('utf8');
@@ -23,7 +28,9 @@ request.on('response', function(response){
         var tweet_message = message.slice(0, newlineIndex);
         if (tweet_message.length > 10) {
           var tweet = JSON.parse(tweet_message);
-          console.log('tweet: ' + tweet.text);
+          tweetDb.insert(tweet,function(res){
+            if(res) console.log(res);
+          })
         }
       }
       message = message.slice(newlineIndex + 1);
