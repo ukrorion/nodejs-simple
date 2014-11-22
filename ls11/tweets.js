@@ -36,9 +36,10 @@ Tweet.prototype.getAll =  function(callback){
 };
 
 Tweet.prototype.insert = function(collection, callback){
-  this.client.close();
+  if (this.client.serverConfig.isConnected()){
+    this.client.close();
+  }
   this.client.open(function(error, client){
-    console.log(client);
     if(error){
       console.log("Not connected because of error: " + error);
     } else {
@@ -55,7 +56,6 @@ Tweet.prototype.insert = function(collection, callback){
         }
       });
     }
-    client.close();
   });
 };
 
