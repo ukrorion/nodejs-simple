@@ -58,6 +58,7 @@ Tweet.prototype.insert = function(collection, callback){
         }
       });
     }
+    client.close();
   });
 };
 
