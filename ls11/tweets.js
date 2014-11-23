@@ -11,7 +11,8 @@ var connectToCollection = function(client){
 };
 
 Tweet = function() {
-  this.client = new mongo.MongoClient(new mongo.Server(host, port, {}));
+  this.server = new mongo.Server(host, port, {});
+  this.client = new mongo.MongoClient(this.server);
 };
 
 Tweet.prototype.getAll =  function(callback){
@@ -36,23 +37,24 @@ Tweet.prototype.getAll =  function(callback){
 };
 
 Tweet.prototype.insert = function(collection, callback){
-  if (this.client.serverConfig.isConnected()){
+  if (this.client._db._state == 'connecting')
     this.client.close();
-  }
   this.client.open(function(error, client){
     if(error){
       console.log("Not connected because of error: " + error);
     } else {
       var tweets = connectToCollection(client);
-
+      console.log(tweets);
       tweets.insert(collection, function(err, result){
         if(err){
           console.log("Insert error " + err);
           client.close();
-          callback(false);
+          if (typeof callback == "function")
+            callback(false);
         } else {
           client.close();
-          callback(result);
+          if (typeof callback == "function")
+            callback(result);
         }
       });
     }

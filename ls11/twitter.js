@@ -24,9 +24,7 @@ request.on('response', function(response){
         var tweet_message = message.slice(0, newlineIndex);
         if (tweet_message.length > 10) {
           var tweet = JSON.parse(tweet_message);
-          tweetDb.insert({'tweet': tweet.text},function(res){
-            if(res) console.log(res);
-          });
+          tweetDb.insert({'tweet': tweet.text});
         }
       }
       message = message.slice(newlineIndex + 1);
