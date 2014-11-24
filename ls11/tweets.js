@@ -44,7 +44,6 @@ Tweet.prototype.insert = function(collection, callback){
       console.log("Not connected because of error: " + error);
     } else {
       var tweets = connectToCollection(client);
-      console.log(tweets);
       tweets.insert(collection, function(err, result){
         if(err){
           console.log("Insert error " + err);
@@ -58,7 +57,6 @@ Tweet.prototype.insert = function(collection, callback){
         }
       });
     }
-    client.close();
   });
 };
 

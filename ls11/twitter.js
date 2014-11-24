@@ -1,6 +1,5 @@
 var OAuth = require('oauth').OAuth;
 var Tweet = require('./tweets').Tweet;
-var tweetDb = new Tweet();
 
 var connection = new OAuth(
   'https://api.twitter.com/oauth/request_token',
@@ -24,7 +23,10 @@ request.on('response', function(response){
         var tweet_message = message.slice(0, newlineIndex);
         if (tweet_message.length > 10) {
           var tweet = JSON.parse(tweet_message);
-          tweetDb.insert({'tweet': tweet.text});
+          var tweetDb = new Tweet(); // Needs to create new object for each request to prevent double opening of DB
+          tweetDb.insert({'tweet': tweet.text},function(result){
+            console.log(result);
+          });
         }
       }
       message = message.slice(newlineIndex + 1);
