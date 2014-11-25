@@ -8,16 +8,18 @@ var app = express();
 
 
 app.get("/", function (request, response, next) {
-  var content = fs.readFileSync("./config/template.html");
+  var template = fs.readFileSync("./config/template.html");
   var tweets = new Tweet();
-  var last_tweets;
   tweets.find({},{"limit":10, "sort":{"_id":-1}}, function(res){
-    last_tweets = res;
-    console.log(last_tweets.length);
+    var content = '';
+    res.forEach(function(tweet){
+      content += "<li><strong>"+tweet.user+"</strong> "+tweet.text+" "+ tweet.source +"</li>";
+    });
+    template = template.toString('utf8').replace("{{INITIAL_TWEETS}}", content);
+    response.setHeader("Content-Type", "text/html");
+    response.send(template);
   });
-  response.setHeader("Content-Type", "text/html");
-  response.send(content);
-});
 
+});
 
 app.listen(config.port, config.host);
