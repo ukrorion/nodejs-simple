@@ -6,7 +6,8 @@
   "dependencies": {
     "oauth": "^0.9.12",
     "mongodb": "1.4.19",
-    "express": "4.10.1"
+    "express": "4.10.1",
+    "socket.io": "1.2.1"
   },
   "devDependencies": {},
   "scripts": {

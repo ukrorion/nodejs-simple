@@ -3,11 +3,21 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Twitter stream</title>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <h1>Twitter stream</h1>
     <ul id="twitter">
         {{INITIAL_TWEETS}}
     </ul>
+    <script>
+        var socket = io.connect('http://localhost:3000');
+        var ul = document.getElementById("twitter");
+        socket.on("tweet", function(tweet){
+            var li = document.createElement('li');
+            li.innerHTML("<strong>"+tweet.user+"</strong> "+tweet.text+" "+tweet.source);
+            ul.insertBefore(li, ul.getElementsByTagName('li')[0]);
+        });
+    </script>
 </body>
 </html>
