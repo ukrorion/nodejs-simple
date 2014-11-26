@@ -15,7 +15,7 @@
         var ul = document.getElementById("twitter");
         socket.on("tweet", function(tweet){
             var li = document.createElement('li');
-            li.innerHTML("<strong>"+tweet.user+"</strong> "+tweet.text+" "+tweet.source);
+            li.innerHTML = "<strong>"+tweet.user+"</strong> "+tweet.text+" "+tweet.source;
             ul.insertBefore(li, ul.getElementsByTagName('li')[0]);
         });
     </script>

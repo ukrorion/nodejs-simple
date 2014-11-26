@@ -22,9 +22,9 @@ app.get("/", function (request, response, next) {
   });
 });
 
-// TODO: Need to fix interaction between socket.io and express
-var server = http.createServer(app);
+var server = http.Server(app);
 server.listen(config.port, config.host);
+var io = require('socket.io')(server);
 
 var OAuth = require('oauth').OAuth;
 
@@ -39,12 +39,14 @@ var connection = new OAuth(
 );
 var request = connection.get('https://stream.twitter.com/1.1/statuses/filter.json?track=twitter', '271359180-fmh4JpOdTC0K2nF0QlB2GwyI6q5Cr3Q3WDA8jd41', 'r0TCSqMyZDezNjv2JKvunDXPy7XwryjFeOv2gG3qsVuNM');
 var message = '';
+var socket;
 
-request.on('response', function(response){
-  if(response){
-    var io = require('socket.io').listen(server);
+io.on('connection', function (socket_res) { socket = socket_res });
+
+request.on('response', function (response) {
+  if (response) {
     response.setEncoding('utf8');
-    response.on('data', function(chunk){
+    response.on('data', function (chunk) {
       message += chunk;
       var newlineIndex = message.indexOf('\r');
       if (newlineIndex !== -1) {
@@ -57,9 +59,11 @@ request.on('response', function(response){
             'text': tweet.hasOwnProperty('text') ? tweet.text : '',
             'source': tweet.hasOwnProperty('source') ? tweet.source : ''
           };
-          setTimeout(function(){
-            tweetDb.insert(data_to_write, function(result){
-              io.sockets.emit("tweet", result.first);
+          setTimeout(function () {
+            tweetDb.insert(data_to_write, function (result) {
+              if (typeof socket != 'undefined') {
+                socket.emit("tweet", result[0]);
+              }
             });
           }, 1000);
         }
@@ -70,4 +74,5 @@ request.on('response', function(response){
     console.log("Connection lost with error: " + error);
   }
 });
+
 request.end();
